@@ -1,4 +1,4 @@
-# React + Vite
+npm i react-redux @reduxjs/toolkit redux-persist react-dropzone formik yub react-router-dom @mui/material @emotion/styled @mui/icons-material
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
