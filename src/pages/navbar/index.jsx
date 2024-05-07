@@ -12,11 +12,9 @@ import {
 } from "@mui/material";
 import {
   Search,
-  Message,
   DarkMode,
   LightMode,
   Notifications,
-  Help,
   Menu,
   Close,
 } from "@mui/icons-material";
@@ -35,7 +33,7 @@ const Navbar = () => {
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
   const dark = theme.palette.neutral.dark;
-  const background = theme.palette.background.default;
+  // const background = theme.palette.background.default;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
 
@@ -56,7 +54,7 @@ const Navbar = () => {
             },
           }}
         >
-          Sociopedia
+          Mediabook
         </Typography>
         {isNonMobileScreens && (
           <Flex
@@ -83,9 +81,9 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          <Message sx={{ fontSize: "25px" }} />
+          {/* <Message sx={{ fontSize: "25px" }} /> */}
           <Notifications sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} />
+          {/* <Help sx={{ fontSize: "25px" }} /> */}
           <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
@@ -129,7 +127,7 @@ const Navbar = () => {
           zIndex="10"
           maxWidth="500px"
           minWidth="300px"
-          backgroundColor={background}
+          backgroundColor={alt}
         >
           {/* CLOSE ICON */}
           <Box display="flex" justifyContent="flex-end" p="1rem">
@@ -158,9 +156,9 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
+            {/* <Message sx={{ fontSize: "25px" }} /> */}
             <Notifications sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} />
+            {/* <Help sx={{ fontSize: "25px" }} /> */}
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}
