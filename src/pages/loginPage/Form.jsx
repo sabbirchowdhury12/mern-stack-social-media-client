@@ -55,26 +55,58 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(
+        "https://api.imgbb.com/1/upload?key=b2fcd45ec468c9590cb03dea5d68205a",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      if (data.data && data.data.url) {
+        return data.data.url;
+      } else {
+        throw new Error("Failed to upload image");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null;
+    }
+  };
+
   const register = async (values, onSubmitProps) => {
     // this allows us to send form info with image
-    const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
-    formData.append("picturePath", values.picture.name);
+    console.log("hi");
+    const imageUrl = await uploadImage(values.picture);
 
-    const savedUserResponse = await fetch(
-      "http://localhost:5000/auth/register",
-      {
-        method: "POST",
-        body: formData,
+    if (imageUrl) {
+      values.picture = imageUrl;
+
+      const formData = new FormData();
+      for (let value in values) {
+        formData.append(value, values[value]);
+        console.log(formData);
       }
-    );
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
+      formData.append("picturePath", imageUrl);
 
-    if (savedUser) {
-      setPageType("login");
+      const savedUserResponse = await fetch(
+        "http://localhost:5000/auth/register",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const savedUser = await savedUserResponse.json();
+      onSubmitProps.resetForm();
+
+      if (savedUser) {
+        setPageType("login");
+      }
     }
   };
 
