@@ -25,6 +25,7 @@ import WidgetWrapper from "../../components/widgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../../state";
+import { uploadImage } from "../../utils/uploadImage";
 
 const MyPostWidget = ({ picturePath }) => {
   const dispatch = useDispatch();
@@ -33,30 +34,34 @@ const MyPostWidget = ({ picturePath }) => {
   const [post, setPost] = useState("");
   const { palette } = useTheme();
   const { _id } = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token);
+  // const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
 
   const handlePost = async () => {
-    const formData = new FormData();
-    formData.append("userId", _id);
-    formData.append("description", post);
-    if (image) {
-      formData.append("picture", image);
-      formData.append("picturePath", image.name);
-    }
+    const imageUrl = await uploadImage(image);
 
-    const response = await fetch(`http://localhost:5000/posts`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
-    const posts = await response.json();
-    console.log(posts);
-    dispatch(setPosts({ posts }));
-    setImage(null);
-    setPost("");
+    if (imageUrl) {
+      const postData = {
+        userId: _id,
+        description: post,
+        picturePath: imageUrl,
+      };
+
+      const response = await fetch(`http://localhost:5000/posts/create-post`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData), // Convert postData to JSON string
+      });
+      const posts = await response.json();
+
+      dispatch(setPosts({ posts }));
+      setImage(null);
+      setPost("");
+    }
   };
 
   return (
@@ -133,7 +138,7 @@ const MyPostWidget = ({ picturePath }) => {
           </Typography>
         </Flex>
 
-        {isNonMobileScreens ? (
+        {/* {isNonMobileScreens ? (
           <>
             <Flex gap="0.25rem">
               <GifBoxOutlined sx={{ color: mediumMain }} />
@@ -154,7 +159,7 @@ const MyPostWidget = ({ picturePath }) => {
           <Flex gap="0.25rem">
             <MoreHorizOutlined sx={{ color: mediumMain }} />
           </Flex>
-        )}
+        )} */}
 
         <Button
           disabled={!post}

@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "../../state";
 import Dropzone from "react-dropzone";
 import Flex from "../../components/flex";
+import { uploadImage } from "../../utils/uploadImage";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -55,33 +56,9 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
-  const uploadImage = async (file) => {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      const response = await fetch(
-        "https://api.imgbb.com/1/upload?key=b2fcd45ec468c9590cb03dea5d68205a",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const data = await response.json();
-      if (data.data && data.data.url) {
-        return data.data.url;
-      } else {
-        throw new Error("Failed to upload image");
-      }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      return null;
-    }
-  };
-
   const register = async (values, onSubmitProps) => {
     // this allows us to send form info with image
-    console.log("hi");
+
     const imageUrl = await uploadImage(values.picture);
 
     if (imageUrl) {
@@ -90,9 +67,7 @@ const Form = () => {
       const formData = new FormData();
       for (let value in values) {
         formData.append(value, values[value]);
-        console.log(formData);
       }
-      formData.append("picturePath", imageUrl);
 
       const savedUserResponse = await fetch(
         "http://localhost:5000/auth/register",
