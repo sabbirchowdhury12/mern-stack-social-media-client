@@ -16,6 +16,8 @@ import { setLogin } from "../../state";
 import Dropzone from "react-dropzone";
 import Flex from "../../components/flex";
 import { uploadImage } from "../../utils/uploadImage";
+import { loginApi, registerApi } from "../../utils/apiRoutes";
+import toast from "react-hot-toast";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -64,43 +66,47 @@ const Form = () => {
     if (imageUrl) {
       values.picture = imageUrl;
 
-      const formData = new FormData();
-      for (let value in values) {
-        formData.append(value, values[value]);
-      }
+      console.log(values);
 
-      const savedUserResponse = await fetch(
-        "http://localhost:5000/auth/register",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const savedUserResponse = await fetch(registerApi, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
       const savedUser = await savedUserResponse.json();
-      onSubmitProps.resetForm();
 
-      if (savedUser) {
+      console.log(savedUser);
+      if (savedUser.status) {
+        onSubmitProps.resetForm();
+        toast.success("register successed");
         setPageType("login");
+      } else {
+        toast.error("register failed");
       }
     }
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:5000/auth/login", {
+    const loggedInResponse = await fetch(loginApi, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
     const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
+
+    if (loggedIn.status) {
       dispatch(
         setLogin({
           user: loggedIn.user,
           token: loggedIn.token,
         })
       );
+      onSubmitProps.resetForm();
       navigate("/home");
+      toast.success("login success");
+    } else {
+      toast.error("login failed");
     }
   };
 
