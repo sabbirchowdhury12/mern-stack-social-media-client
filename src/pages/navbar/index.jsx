@@ -37,19 +37,16 @@ const Navbar = () => {
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
 
-  const fullName = `${user?.firstName} ${user?.lastName}`;
-
   return (
     <Flex padding="1rem 6%" backgroundColor={alt}>
       <Flex gap="1.75rem">
         <Typography
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"
-          color="primary"
+          color="neutral"
           onClick={() => navigate("/home")}
           sx={{
             "&:hover": {
-              color: primaryLight,
               cursor: "pointer",
             },
           }}
@@ -84,9 +81,9 @@ const Navbar = () => {
           {/* <Message sx={{ fontSize: "25px" }} /> */}
           <Notifications sx={{ fontSize: "25px" }} />
           {/* <Help sx={{ fontSize: "25px" }} /> */}
-          <FormControl variant="standard" value={fullName}>
+          <FormControl variant="standard" value={user?.firstName}>
             <Select
-              value={fullName}
+              value={user?.firstName}
               sx={{
                 backgroundColor: neutralLight,
                 width: "150px",
@@ -102,8 +99,8 @@ const Navbar = () => {
               }}
               input={<InputBase />}
             >
-              <MenuItem value={fullName}>
-                <Typography>{fullName}</Typography>
+              <MenuItem value={user?.firstName}>
+                <Typography>{user?.firstName}</Typography>
               </MenuItem>
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
             </Select>
@@ -159,9 +156,9 @@ const Navbar = () => {
             {/* <Message sx={{ fontSize: "25px" }} /> */}
             <Notifications sx={{ fontSize: "25px" }} />
             {/* <Help sx={{ fontSize: "25px" }} /> */}
-            <FormControl variant="standard" value={fullName}>
+            <FormControl variant="standard" value={user?.firstName}>
               <Select
-                value={fullName}
+                value={user?.firstName}
                 sx={{
                   backgroundColor: neutralLight,
                   width: "150px",
@@ -177,8 +174,8 @@ const Navbar = () => {
                 }}
                 input={<InputBase />}
               >
-                <MenuItem value={fullName}>
-                  <Typography>{fullName}</Typography>
+                <MenuItem value={user?.firstName}>
+                  <Typography>{user?.firstName}</Typography>
                 </MenuItem>
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out

@@ -1,17 +1,28 @@
 /* eslint-disable react/prop-types */
 import {
   ChatBubbleOutlineOutlined,
+  Download,
   FavoriteBorderOutlined,
   FavoriteOutlined,
   ShareOutlined,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import Flex from "../../components/flex";
 import Friend from "../../components/friend";
 import WidgetWrapper from "../../components/widgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "../../state";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+import { saveAs } from "file-saver";
 
 const PostWidget = ({
   postId,
@@ -48,6 +59,10 @@ const PostWidget = ({
     dispatch(setPost({ post: updatedPost }));
   };
 
+  const handleSaveImage = () => {
+    saveAs(picturePath, "downloaded_image.jpg");
+  };
+
   return (
     <WidgetWrapper m="2rem 0">
       <Friend
@@ -60,13 +75,17 @@ const PostWidget = ({
         {description}
       </Typography>
       {picturePath && (
-        <img
-          width="100%"
-          height="auto"
-          alt="post"
-          style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-          src={picturePath}
-        />
+        <>
+          <Zoom>
+            <img
+              width="100%"
+              height="auto"
+              alt="post"
+              style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
+              src={picturePath}
+            />
+          </Zoom>
+        </>
       )}
       <Flex mt="0.25rem">
         <Flex gap="1rem">
@@ -86,6 +105,12 @@ const PostWidget = ({
               <ChatBubbleOutlineOutlined />
             </IconButton>
             <Typography>{comments.length}</Typography>
+          </Flex>
+          <Flex gap="0.3rem" title="download">
+            <Button onClick={handleSaveImage}>
+              {" "}
+              <Download />{" "}
+            </Button>
           </Flex>
         </Flex>
 

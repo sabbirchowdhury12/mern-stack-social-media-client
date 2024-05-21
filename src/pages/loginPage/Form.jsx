@@ -66,8 +66,6 @@ const Form = () => {
     if (imageUrl) {
       values.picture = imageUrl;
 
-      console.log(values);
-
       const savedUserResponse = await fetch(registerApi, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -76,7 +74,6 @@ const Form = () => {
 
       const savedUser = await savedUserResponse.json();
 
-      console.log(savedUser);
       if (savedUser.status) {
         onSubmitProps.resetForm();
         toast.success("register successed");

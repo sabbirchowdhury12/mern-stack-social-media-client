@@ -16,6 +16,7 @@ import WidgetWrapper from "../../components/widgetWrapper";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { profileApi } from "../../utils/apiRoutes";
 // img LinkedIn
 
 const UserWidget = ({ userId, picturePath }) => {
@@ -28,12 +29,12 @@ const UserWidget = ({ userId, picturePath }) => {
   const main = palette.neutral.main;
 
   const getUser = async () => {
-    const response = await fetch(`http://localhost:5000/users/${userId}`, {
+    const response = await fetch(`${profileApi}/${userId}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
-    setUser(data?.data);
+    setUser(data);
   };
 
   useEffect(() => {
@@ -74,7 +75,6 @@ const UserWidget = ({ userId, picturePath }) => {
               fontWeight="500"
               sx={{
                 "&:hover": {
-                  color: palette.primary.light,
                   cursor: "pointer",
                 },
               }}
