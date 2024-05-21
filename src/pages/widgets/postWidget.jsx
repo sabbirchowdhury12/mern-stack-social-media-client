@@ -11,6 +11,7 @@ import {
   Button,
   Divider,
   IconButton,
+  InputBase,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -23,6 +24,7 @@ import { setPost } from "../../state";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { saveAs } from "file-saver";
+import { postApi } from "../../utils/apiRoutes";
 
 const PostWidget = ({
   postId,
@@ -36,6 +38,7 @@ const PostWidget = ({
   comments,
 }) => {
   const [isComments, setIsComments] = useState(false);
+  const [comment, setComment] = useState("");
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
@@ -47,7 +50,7 @@ const PostWidget = ({
   const primary = palette.primary.main;
 
   const patchLike = async () => {
-    const response = await fetch(`http://localhost:5000/posts/${postId}/like`, {
+    const response = await fetch(`${postApi}/${postId}/like`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -57,6 +60,20 @@ const PostWidget = ({
     });
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
+  };
+
+  const handleComment = async () => {
+    const response = await fetch(`${postApi}/${postId}/comment`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ comment }),
+    });
+    const updatedPost = await response.json();
+    dispatch(setPost({ post: updatedPost }));
+    setComment("");
   };
 
   const handleSaveImage = () => {
@@ -128,6 +145,31 @@ const PostWidget = ({
               </Typography>
             </Box>
           ))}
+          <Flex gap="0.3rem">
+            <InputBase
+              placeholder="leave a comment..."
+              onChange={(e) => setComment(e.target.value)}
+              value={comment}
+              sx={{
+                width: "100%",
+                backgroundColor: palette.neutral.light,
+                borderRadius: "2rem",
+                padding: "0.5rem 2rem",
+                margin: "1rem 0",
+              }}
+            />
+            <Button
+              disabled={!comment}
+              onClick={handleComment}
+              sx={{
+                color: palette.background.alt,
+                backgroundColor: palette.primary.main,
+                borderRadius: "3rem",
+              }}
+            >
+              Done
+            </Button>
+          </Flex>
           <Divider />
         </Box>
       )}
