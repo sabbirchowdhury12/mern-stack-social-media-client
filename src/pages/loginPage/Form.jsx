@@ -205,7 +205,7 @@ const Form = () => {
                       >
                         <input {...getInputProps()} />
                         {!values.picture ? (
-                          <p>Add Picture Here</p>
+                          <p>Drop a Picture </p>
                         ) : (
                           <Flex>
                             <Typography>{values.picture.name}</Typography>

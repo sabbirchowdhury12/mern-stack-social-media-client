@@ -1,4 +1,6 @@
-export const registerApi = "http://localhost:5000/auth/register";
-export const loginApi = "http://localhost:5000/auth/login";
-export const profileApi = "http://localhost:5000/users";
-export const postApi = "http://localhost:5000/posts";
+// const host = "http://localhost:5000";
+const host = "https://mern-stack-social-media.vercel.app";
+export const registerApi = `${host}/auth/register`;
+export const loginApi = `${host}/auth/login`;
+export const profileApi = `${host}/users`;
+export const postApi = `${host}/posts`;
