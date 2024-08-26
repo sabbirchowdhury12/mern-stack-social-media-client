@@ -28,14 +28,19 @@ const MyPostWidget = ({ picturePath }) => {
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const { palette } = useTheme();
   const { _id } = useSelector((state) => state.user);
-  // const token = useSelector((state) => state.token);
-  // const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
 
   const handlePost = async () => {
+    if (!image) {
+      setErrorMessage("Image is required to make a post.");
+      return;
+    }
+    setErrorMessage(""); // Clear any previous error
+
     const imageUrl = await uploadImage(image);
 
     if (imageUrl) {
@@ -50,9 +55,10 @@ const MyPostWidget = ({ picturePath }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(postData), // Convert postData to JSON string
+        body: JSON.stringify(postData),
       });
       const posts = await response.json();
+      console.log(posts);
 
       dispatch(setPosts({ posts }));
       setImage(null);
@@ -121,6 +127,12 @@ const MyPostWidget = ({ picturePath }) => {
         </Box>
       )}
 
+      {errorMessage && (
+        <Typography color="error" sx={{ mt: "1rem" }}>
+          {errorMessage}
+        </Typography>
+      )}
+
       <Divider sx={{ margin: "1.25rem 0" }} />
 
       <Flex>
@@ -134,31 +146,8 @@ const MyPostWidget = ({ picturePath }) => {
           </Typography>
         </Flex>
 
-        {/* {isNonMobileScreens ? (
-          <>
-            <Flex gap="0.25rem">
-              <GifBoxOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Clip</Typography>
-            </Flex>
-
-            <Flex gap="0.25rem">
-              <AttachFileOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Attachment</Typography>
-            </Flex>
-
-            <Flex gap="0.25rem">
-              <MicOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Audio</Typography>
-            </Flex>
-          </>
-        ) : (
-          <Flex gap="0.25rem">
-            <MoreHorizOutlined sx={{ color: mediumMain }} />
-          </Flex>
-        )} */}
-
         <Button
-          disabled={!post}
+          disabled={!post || !image}
           onClick={handlePost}
           sx={{
             color: palette.background.alt,

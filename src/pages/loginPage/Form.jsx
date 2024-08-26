@@ -92,6 +92,7 @@ const Form = () => {
     });
     const loggedIn = await loggedInResponse.json();
 
+    console.log(loggedIn);
     if (loggedIn.status) {
       dispatch(
         setLogin({
@@ -103,7 +104,7 @@ const Form = () => {
       navigate("/home");
       toast.success("login success");
     } else {
-      toast.error("login failed");
+      toast.error("login failed. try again");
     }
   };
 
