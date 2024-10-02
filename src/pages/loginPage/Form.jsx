@@ -6,6 +6,7 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
+  CircularProgress,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
@@ -51,6 +52,7 @@ const initialValuesLogin = {
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [loading, setLoading] = useState(false);
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -59,7 +61,7 @@ const Form = () => {
   const isRegister = pageType === "register";
 
   const register = async (values, onSubmitProps) => {
-    // this allows us to send form info with image
+    setLoading(true);
 
     const imageUrl = await uploadImage(values.picture);
 
@@ -78,21 +80,23 @@ const Form = () => {
         onSubmitProps.resetForm();
         toast.success("register successed");
         setPageType("login");
+        setLoading(false);
       } else {
+        setLoading(false);
         toast.error("register failed");
+        setLoading(false);
       }
     }
   };
 
   const login = async (values, onSubmitProps) => {
+    setLoading(true);
     const loggedInResponse = await fetch(loginApi, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
     const loggedIn = await loggedInResponse.json();
-
-    console.log(loggedIn);
     if (loggedIn.status) {
       dispatch(
         setLogin({
@@ -103,8 +107,10 @@ const Form = () => {
       onSubmitProps.resetForm();
       navigate("/home");
       toast.success("login success");
+      setLoading(false);
     } else {
       toast.error("login failed. try again");
+      setLoading(false);
     }
   };
 
@@ -256,7 +262,10 @@ const Form = () => {
                 "&:hover": { color: palette.primary.main },
               }}
             >
-              {isLogin ? "LOGIN" : "REGISTER"}
+              {isLogin ? "LOGIN " : "REGISTER "}{" "}
+              {loading && (
+                <CircularProgress style={{ marginLeft: "8px" }} size={16} />
+              )}
             </Button>
             <Typography
               onClick={() => {
@@ -268,7 +277,7 @@ const Form = () => {
                 color: palette.primary.main,
                 "&:hover": {
                   cursor: "pointer",
-                  color: palette.primary.light,
+                  color: "#000000",
                 },
               }}
             >

@@ -12,6 +12,7 @@ import {
   useTheme,
   Button,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import Flex from "../../components/flex";
 import Dropzone from "react-dropzone";
@@ -22,10 +23,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../../state";
 import { postApi } from "../../utils/apiRoutes";
 import { uploadImage } from "../../utils/uploadImage";
+import toast from "react-hot-toast";
 
 const MyPostWidget = ({ picturePath }) => {
   const dispatch = useDispatch();
   const [isImage, setIsImage] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -35,14 +38,15 @@ const MyPostWidget = ({ picturePath }) => {
   const medium = palette.neutral.medium;
 
   const handlePost = async () => {
-    if (!image) {
-      setErrorMessage("Image is required to make a post.");
-      return;
-    }
-    setErrorMessage(""); // Clear any previous error
-
+    setLoading(true);
+    setErrorMessage("");
     const imageUrl = await uploadImage(image);
 
+    if (!imageUrl) {
+      toast.error("Something Wrong with Your Photo. Try Later");
+      setLoading(false);
+      return;
+    }
     if (imageUrl) {
       const postData = {
         userId: _id,
@@ -58,8 +62,8 @@ const MyPostWidget = ({ picturePath }) => {
         body: JSON.stringify(postData),
       });
       const posts = await response.json();
-      console.log(posts);
-
+      toast.success("Post Created Successfully");
+      setLoading(false);
       dispatch(setPosts({ posts }));
       setImage(null);
       setPost("");
@@ -80,6 +84,7 @@ const MyPostWidget = ({ picturePath }) => {
             borderRadius: "2rem",
             padding: "1rem 2rem",
           }}
+          required
         />
       </Flex>
       {isImage && (
@@ -116,7 +121,7 @@ const MyPostWidget = ({ picturePath }) => {
                 {image && (
                   <IconButton
                     onClick={() => setImage(null)}
-                    sx={{ width: "15%" }}
+                    sx={{ width: "10%", marginLeft: "5px" }}
                   >
                     <DeleteOutlined />
                   </IconButton>
@@ -127,11 +132,11 @@ const MyPostWidget = ({ picturePath }) => {
         </Box>
       )}
 
-      {errorMessage && (
+      {/* {errorMessage && (
         <Typography color="error" sx={{ mt: "1rem" }}>
           {errorMessage}
         </Typography>
-      )}
+      )} */}
 
       <Divider sx={{ margin: "1.25rem 0" }} />
 
@@ -147,17 +152,33 @@ const MyPostWidget = ({ picturePath }) => {
         </Flex>
 
         <Button
-          disabled={!post || !image}
+          // disabled={!post || !image}
           onClick={handlePost}
           sx={{
             color: palette.background.alt,
             backgroundColor: palette.primary.main,
             borderRadius: "3rem",
+            "&:hover": {
+              backgroundColor: "#333333",
+            },
           }}
         >
-          POST
+          {loading ? (
+            <CircularProgress
+              style={{ marginLeft: "8px", color: "#FFFFFF" }}
+              size={16}
+            />
+          ) : (
+            "POST"
+          )}
         </Button>
       </Flex>
+
+      {errorMessage && (
+        <Typography color="error" sx={{ mt: "1rem" }}>
+          {errorMessage}
+        </Typography>
+      )}
     </WidgetWrapper>
   );
 };
