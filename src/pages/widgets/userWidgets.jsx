@@ -243,7 +243,7 @@ const UserWidget = ({ userId, picturePath }) => {
             style={{ textDecoration: "none" }}
             target="_blank"
             rel="noopener noreferrer"
-            href={socialLinks?.linkedIn}
+            href={socialLinks?.linkedin}
           >
             <Flex gap="1rem">
               <LinkedIn fontSize="small" sx={{ color: main }} />

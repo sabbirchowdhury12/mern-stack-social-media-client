@@ -29,10 +29,9 @@ MongoDB
 ### Features
 
 - Leveraged Material UI to ensure design consistency and create a user-friendly interface with modern and responsive UI components.
-- Developed social networking features, enabling users to make friends, view profiles, and zoom and save images seamlessly.
+- Developed social networking features, enabling users to make friends, view profiles, and edit profiles. and zoom and save images seamlessly.
 - Implemented post functionalities, allowing users to upload posts, comment on them, and like posts, enhancing user engagement and interaction.
-- Integrated React Dropzone to provide a smooth and intuitive file upload experience.
-- Utilized Formik with Yup for robust form validation, ensuring data integrity and enhancing the user experience.
+- Integrated React Dropzone to provide a smooth and intuitive file upload experience and user can add their social links.
 
 ### Upcoming Features
 
@@ -42,4 +41,5 @@ MongoDB
 Login ID:
 
 Email: sabbir@gmail.com
+
 Password: 123456
