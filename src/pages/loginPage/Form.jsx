@@ -59,57 +59,83 @@ const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
-
   const register = async (values, onSubmitProps) => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const imageUrl = await uploadImage(values.picture);
+      // Upload the image and get the URL
+      const imageUrl = await uploadImage(values.picture);
 
-    if (imageUrl) {
+      if (!imageUrl) {
+        toast.error("Image upload failed");
+        setLoading(false);
+        return;
+      }
+
+      // Update the picture field with the uploaded image URL
       values.picture = imageUrl;
 
+      // Make the register API call
       const savedUserResponse = await fetch(registerApi, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
 
+      // Parse the JSON response
       const savedUser = await savedUserResponse.json();
 
-      if (savedUser.status) {
+      if (savedUserResponse.ok && savedUser.status) {
+        // Success: Reset the form and navigate to login
         onSubmitProps.resetForm();
-        toast.success("register successed");
+        toast.success("Registration successful!");
         setPageType("login");
-        setLoading(false);
       } else {
-        setLoading(false);
-        toast.error("register failed");
-        setLoading(false);
+        // Failure: Show error message from API response or a default message
+        toast.error(savedUser.message || "Registration failed");
       }
+    } catch (error) {
+      console.error("Register Error:", error);
+      toast.error("An unexpected error occurred during registration.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const login = async (values, onSubmitProps) => {
-    setLoading(true);
-    const loggedInResponse = await fetch(loginApi, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-    const loggedIn = await loggedInResponse.json();
-    if (loggedIn.status) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
-      );
-      onSubmitProps.resetForm();
-      navigate("/home");
-      toast.success("login success");
-      setLoading(false);
-    } else {
-      toast.error("login failed. try again");
+    try {
+      setLoading(true);
+
+      // Make the login API call
+      const loggedInResponse = await fetch(loginApi, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      // Parse the JSON response
+      const loggedIn = await loggedInResponse.json();
+
+      console.log(loggedInResponse, loggedIn);
+      if (loggedInResponse.ok && loggedIn.status) {
+        // Success: Save user details and navigate to home
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        onSubmitProps.resetForm();
+        navigate("/home");
+        toast.success("Login successful!");
+      } else {
+        // Failure: Show error message from API response or a default message
+        toast.error(loggedIn.message || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login Error:", error);
+      toast.error("An unexpected error occurred during login.");
+    } finally {
       setLoading(false);
     }
   };
